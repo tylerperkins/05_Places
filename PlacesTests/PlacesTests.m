@@ -27,7 +27,7 @@
 
 - (void)testExample
 {
-    STFail(@"Unit tests are not implemented yet in PlacesTests");
+    //  STFail(@"Unit tests are not implemented yet in PlacesTests");
 }
 
 @end
