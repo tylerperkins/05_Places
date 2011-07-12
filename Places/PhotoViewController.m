@@ -11,7 +11,6 @@
 
 
 @interface PhotoViewController ()
-@property (assign,nonatomic) BOOL         picticularsDidChange;
 @property (nonatomic,retain) UIImageView* imageView;
 - (void) setImageViewByDownloadingURL:(NSURL*)url;
 - (void) setScrollViewZoom;

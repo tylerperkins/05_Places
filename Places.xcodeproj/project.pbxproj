@@ -36,6 +36,7 @@
 		2F730E8813B3A7F200AEDD7F /* PlacesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F730E8713B3A7F200AEDD7F /* PlacesTableViewController.m */; };
 		2F7AB70E13BBA0DE00C366DF /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F7AB70C13BBA0DE00C366DF /* PhotoViewController.m */; };
 		2F7AB70F13BBA0DE00C366DF /* PhotoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F7AB70D13BBA0DE00C366DF /* PhotoViewController.xib */; };
+		2FCB2D5813CBD9C800F9CDDF /* README.org in Resources */ = {isa = PBXBuildFile; fileRef = 2FCB2D5713CBD9C700F9CDDF /* README.org */; };
 		2FD3392613BA6AB100791661 /* NSString+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FD3392513BA6AB100791661 /* NSString+Utils.m */; };
 		2FD3392713BA6AB100791661 /* NSString+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FD3392513BA6AB100791661 /* NSString+Utils.m */; };
 		2FD3392B13BA6BC400791661 /* NSString_UtilsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FD3392913BA6BC400791661 /* NSString_UtilsTest.m */; };
@@ -102,6 +103,7 @@
 		2F7AB70B13BBA0DE00C366DF /* PhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoViewController.h; sourceTree = "<group>"; };
 		2F7AB70C13BBA0DE00C366DF /* PhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoViewController.m; sourceTree = "<group>"; };
 		2F7AB70D13BBA0DE00C366DF /* PhotoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PhotoViewController.xib; sourceTree = "<group>"; };
+		2FCB2D5713CBD9C700F9CDDF /* README.org */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.org; sourceTree = "<group>"; };
 		2FD3392413BA6AB000791661 /* NSString+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Utils.h"; sourceTree = "<group>"; };
 		2FD3392513BA6AB100791661 /* NSString+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Utils.m"; sourceTree = "<group>"; };
 		2FD3392813BA6BC400791661 /* NSString_UtilsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSString_UtilsTest.h; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 		2F730DE613B2664500AEDD7F = {
 			isa = PBXGroup;
 			children = (
+				2FCB2D5713CBD9C700F9CDDF /* README.org */,
 				2F730E6313B2872200AEDD7F /* FlickrFetcher */,
 				2F730DFB13B2664600AEDD7F /* Places */,
 				2F730E2113B2664700AEDD7F /* PlacesTests */,
@@ -326,6 +329,7 @@
 				2F730E0013B2664600AEDD7F /* InfoPlist.strings in Resources */,
 				2F730E0913B2664600AEDD7F /* MainWindow.xib in Resources */,
 				2F7AB70F13BBA0DE00C366DF /* PhotoViewController.xib in Resources */,
+				2FCB2D5813CBD9C800F9CDDF /* README.org in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

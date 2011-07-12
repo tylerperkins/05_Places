@@ -1,0 +1,10 @@
+** Fall 2010 Stanford course, /Developing Apps for iOS/.
+
+**** This excellent series of online lectures is available through [[http://itunes.apple.com/us/itunes-u/developing-apps-for-ios-hd/id395605774][iTunes U]].
+**** You can download slides from the lectures and associated [[http://www.stanford.edu/class/cs193p/cgi-bin/drupal/downloads-2010-fall][assignments]].
+
+** This repository contains my solution to [[http://www.stanford.edu/class/cs193p/cgi-bin/drupal/system/files/assignments/Assignment%205_0.pdf][Assignment V]].
+
+*** Differences my from the assignment requirements.
+
+*None.* As far as I know, I've implemented the requirements completely. So far, I've done none of the "Extra Credit" items.

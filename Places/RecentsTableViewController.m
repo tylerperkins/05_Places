@@ -11,6 +11,7 @@
 
 @interface RecentsTableViewController ()
 @property (retain,nonatomic) TableViewCellAssociations* cellAssociations;
+- (void) pushPhotoViewController;
 @end
 
 
@@ -33,6 +34,7 @@
 - (void) dealloc {
     [_flickrModel release];
     [_photoViewController release];
+    [_cellAssociations release];
     [super dealloc];
 }
 
@@ -114,11 +116,32 @@
         cellForRowAtIndexPath:indexPath
     ].textLabel.text;
     
-    //  Navigate to the PhotoViewController and view the image.
+    //  Navigate to the PhotoViewController and view the image, but only after
+    //  we allow time for the network activity indicator to show.
+    if ( self.photoViewController.picticularsDidChange ) {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    }
+    [self performSelector:@selector(pushPhotoViewController)
+               withObject:nil
+               afterDelay:0.05
+    ];
+}
+
+
+#pragma mark - Private methods and functions
+
+
+/*  Method used to postpone pushing the PhotoViewController until after the
+ network activity indicator has a chance to display.
+ */
+- (void) pushPhotoViewController {
     [self.navigationController
         pushViewController:self.photoViewController
                   animated:YES
     ];
+    
+    //  All done. Turn off the indicator.
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
 

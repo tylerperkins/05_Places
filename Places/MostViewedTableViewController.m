@@ -11,9 +11,8 @@
 
 
 @interface MostViewedTableViewController ()
-@property (assign,nonatomic) BOOL                       hasNoRowsYet;
 @property (retain,nonatomic) TableViewCellAssociations* cellAssociations;
-- (void) populate;
+- (void) pushPhotoViewController;
 @end
 
 
@@ -24,7 +23,6 @@
 @synthesize photoViewController=_photoViewController;
 @synthesize placeId=_placeId;
 @synthesize placeIdDidChange=_placeIdDidChange;
-@synthesize hasNoRowsYet=_hasNoRowsYet;
 @synthesize cellAssociations=_cellAssociations;
 
 
@@ -60,17 +58,18 @@
     [super viewWillAppear:animated];
 
     if ( self.placeIdDidChange ) {
-        //  We're not just going back to the same list, so get photo data.
-
-        self.hasNoRowsYet = YES;
+        //  We're not just going back to the same list, so get new photo data.
         [self.tableView reloadData];
-        self.hasNoRowsYet = NO;
 
-        UIApplication* app = [UIApplication sharedApplication];
-        app.networkActivityIndicatorVisible = YES;
-        [self performSelector:@selector(populate)
-                   withObject:nil
-                   afterDelay:0.05
+        //  We have a new list, so make sure we're scrolled up to the top.
+        NSUInteger indexes[] = {0, 0};    // For IndexPath of top cell.
+        [self.tableView
+            scrollToRowAtIndexPath:[NSIndexPath
+                indexPathWithIndexes:indexes
+                              length:2
+            ]
+                  atScrollPosition:UITableViewScrollPositionTop
+                          animated:NO
         ];
 
         //  Next time, don't reloadData, etc.
@@ -102,7 +101,6 @@
 
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView*)tableView {
-    //  Return the number of sections.
     return 1;
 }
 
@@ -110,10 +108,7 @@
 - (NSInteger) tableView:(UITableView*)tableView
   numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
-    return self.hasNoRowsYet
-    ?    0
-    :    [self.flickrModel numberOfImagesForPlaceId:self.placeId];
+    return [self.flickrModel numberOfImagesForPlaceId:self.placeId];
 }
 
 
@@ -162,31 +157,32 @@
         cellForRowAtIndexPath:indexPath
     ].textLabel.text;
 
-    //  Navigate to the PhotoViewController and view the image.
-    [self.navigationController
-        pushViewController:self.photoViewController
-                  animated:YES
-    ];
+    //  Navigate to the PhotoViewController and view the image, but only after
+    //  we allow time for the network activity indicator to show.
+    if ( self.photoViewController.picticularsDidChange ) {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    }
+    [self performSelector:@selector(pushPhotoViewController)
+               withObject:nil
+               afterDelay:0.05
+     ];
 }
 
 
 #pragma mark - Private methods and functions
 
 
-- (void) populate {
-    [self.tableView reloadData];
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-
-    //  We have a new list, so make sure we're scrolled up to the top.
-    NSUInteger indexes[] = {0, 0};    // For IndexPath of top cell.
-    [self.tableView
-        scrollToRowAtIndexPath:[NSIndexPath
-            indexPathWithIndexes:indexes
-                          length:2
-        ]
-              atScrollPosition:UITableViewScrollPositionTop
-                      animated:NO
+/*  Method used to postpone pushing the PhotoViewController until after the
+    network activity indicator has a chance to display.
+*/
+- (void) pushPhotoViewController {
+    [self.navigationController
+        pushViewController:self.photoViewController
+                  animated:YES
     ];
+
+    //  All done. Turn off the indicator.
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
 

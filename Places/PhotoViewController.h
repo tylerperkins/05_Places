@@ -15,5 +15,6 @@
 @property (nonatomic,retain) IBOutlet UIScrollView* scrollView;
 @property (nonatomic,retain) IBOutlet FlickrModel*  flickrModel;
 @property (nonatomic,retain)          Picticulars*  picticulars;
+@property (assign,nonatomic) BOOL                   picticularsDidChange;
 
 @end

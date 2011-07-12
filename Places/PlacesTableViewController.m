@@ -14,6 +14,7 @@
 @interface PlacesTableViewController ()
 @property (retain,nonatomic) TableViewCellAssociations* cellAssociations;
 - (void) populate;
+- (void) pushMostViewedTableViewController;
 @end
 
 
@@ -53,11 +54,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    UIApplication* app = [UIApplication sharedApplication];
-    app.networkActivityIndicatorVisible = YES;
+    //  Load new places data, but only after we allow time for the network
+    //  activity indicator to show. Meanwhile, old table rows are displayed.
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     [self performSelector:@selector(populate)
                withObject:nil
-               afterDelay:0.05
+               afterDelay:0.05    // Wait at least 50 msec.
     ];
 }
 
@@ -122,9 +124,12 @@
         cellForRowAtIndexPath:indexPath
     ].textLabel.text;
 
-    [self.navigationController
-        pushViewController:self.mostViewedTableViewController
-                  animated:YES
+    if ( self.mostViewedTableViewController.placeIdDidChange ) {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    }
+    [self performSelector:@selector(pushMostViewedTableViewController)
+               withObject:nil
+               afterDelay:0.05       // Wait at least 50 msec.
     ];
 }
 
@@ -132,9 +137,30 @@
 #pragma mark - Private methods and functions
 
 
+/*  Method used to postpone downloading places data and repopulating this
+    tableView until after the network activity indicator has had a chance to
+    display.
+*/
 - (void) populate {
     [self.flickrModel refresh];
     [self.tableView reloadData];
+
+    //  All done. Turn off the indicator.
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}
+
+
+/*  Method used to postpone pushing the MostViewedViewController until after
+    the network activity indicator has had a chance to display.
+ */
+- (void) pushMostViewedTableViewController {
+    
+    [self.navigationController
+        pushViewController:self.mostViewedTableViewController
+                  animated:YES
+    ];
+
+    //  All done. Turn off the indicator.
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
