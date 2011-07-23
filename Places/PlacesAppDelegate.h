@@ -7,14 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FlickrModel.h"
+#import "RecentsModel.h"
 
 @interface PlacesAppDelegate : NSObject
 <UIApplicationDelegate, UITabBarControllerDelegate>
 {}
 
-@property (nonatomic, retain) IBOutlet UIWindow           *window;
-@property (nonatomic, retain) IBOutlet UITabBarController *tabBarController;
-@property (nonatomic, retain) IBOutlet FlickrModel        *flickrModel;
+@property (nonatomic,retain) IBOutlet UIWindow*           window;
+@property (nonatomic,retain) IBOutlet UITabBarController* tabBarController;
+@property (nonatomic,retain) IBOutlet RecentsModel*       recentsModel;
 
 @end

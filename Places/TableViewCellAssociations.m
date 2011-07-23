@@ -19,10 +19,10 @@
 @implementation TableViewCellAssociations
 
 
-@synthesize tableView=_tableView;
-@synthesize associates=_associates;
-@synthesize cellTagCount=_cellTagCount;
-@synthesize reuseIdentifier=_reuseIdentifier;
+@synthesize tableView = _tableView;
+@synthesize associates = _associates;
+@synthesize cellTagCount = _cellTagCount;
+@synthesize reuseIdentifier = _reuseIdentifier;
 
 
 - (id) initWithTableView:(UITableView*)tableView {
@@ -76,11 +76,16 @@
 }
 
 
-- (id) associateForSelectedCell {
+- (id) associateForIndexPath:(NSIndexPath*)indexPath {
     return  [self.associates
-        objectAtIndex:[self.tableView
-            cellForRowAtIndexPath:[self.tableView indexPathForSelectedRow]
-        ].tag
+        objectAtIndex:[self.tableView cellForRowAtIndexPath:indexPath].tag
+    ];
+}
+
+
+- (id) associateForSelectedCell {
+    return  [self
+        associateForIndexPath:[self.tableView indexPathForSelectedRow]
     ];
 }
 

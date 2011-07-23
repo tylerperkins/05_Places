@@ -32,6 +32,7 @@
 
 - (id) initWithTableView:(UITableView*)tableView;
 - (UITableViewCell*) cellToAssociateWithObject:(id)obj;
+- (id) associateForIndexPath:(NSIndexPath*)indexPath;
 - (id) associateForSelectedCell;
 
 @end

@@ -22,11 +22,11 @@ CGFloat scaleToFillOrFit( BOOL shouldFill, CGSize boundsSz, CGSize imageSz );
 @implementation PhotoViewController
 
 
-@synthesize scrollView=_scrollView;
+@synthesize scrollView = _scrollView;
 @synthesize flickrModel = _flickrModel;
-@synthesize imageView=_imageView;
-@synthesize picticulars=_picticulars;
-@synthesize picticularsDidChange=_picticularsDidChange;
+@synthesize imageView = _imageView;
+@synthesize picticulars = _picticulars;
+@synthesize picticularsDidChange = _picticularsDidChange;
 
 
 - (void) dealloc {

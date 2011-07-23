@@ -7,4 +7,4 @@
 
 *** Differences my from the assignment requirements.
 
-*None.* As far as I know, I've implemented the requirements completely. So far, I've done none of the "Extra Credit" items.
+As far as I know, I've implemented the requirements completely. I also implemented the second Extra Credit item, allowing the user to delete rows from the Recents list.

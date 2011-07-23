@@ -11,15 +11,15 @@
 @implementation PlacesAppDelegate
 
 
-@synthesize window=_window;
-@synthesize tabBarController=_tabBarController;
-@synthesize flickrModel=_flickrModel;
+@synthesize window = _window;
+@synthesize tabBarController = _tabBarController;
+@synthesize recentsModel = _recentsModel;
 
 
 - (BOOL)            application:(UIApplication*)application
   didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
-    [self.flickrModel
+    [self.recentsModel
         restoreFromUserDefaults:[NSUserDefaults standardUserDefaults]
     ];
     self.window.rootViewController = self.tabBarController;
@@ -41,7 +41,7 @@
      If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
      */
 
-    [self.flickrModel
+    [self.recentsModel
         saveToUserDefaults:[NSUserDefaults standardUserDefaults]
     ];
 }
@@ -73,7 +73,7 @@
 {
     [_window release];
     [_tabBarController release];
-    [_flickrModel release];
+    [_recentsModel release];
     [super dealloc];
 }
 

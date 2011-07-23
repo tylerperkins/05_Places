@@ -8,12 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "FlickrModel.h"
+#import "RecentsModel.h"
 #import "PhotoViewController.h"
 
 
 @interface MostViewedTableViewController : UITableViewController {}
 
+
 @property (nonatomic,retain) IBOutlet FlickrModel*         flickrModel;
+@property (nonatomic,retain) IBOutlet RecentsModel*        recentsModel;
 @property (nonatomic,retain) IBOutlet PhotoViewController* photoViewController;
 @property (nonatomic,retain)          NSString*            placeId;
 @property (assign,nonatomic) BOOL                          placeIdDidChange;

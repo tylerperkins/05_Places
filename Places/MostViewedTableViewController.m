@@ -19,11 +19,12 @@
 @implementation MostViewedTableViewController
 
 
-@synthesize flickrModel=_flickrModel;
-@synthesize photoViewController=_photoViewController;
-@synthesize placeId=_placeId;
-@synthesize placeIdDidChange=_placeIdDidChange;
-@synthesize cellAssociations=_cellAssociations;
+@synthesize flickrModel = _flickrModel;
+@synthesize recentsModel = _recentsModel;
+@synthesize photoViewController = _photoViewController;
+@synthesize placeId = _placeId;
+@synthesize placeIdDidChange = _placeIdDidChange;
+@synthesize cellAssociations = _cellAssociations;
 
 
 - (void) awakeFromNib {
@@ -36,6 +37,7 @@
 
 - (void) dealloc {
     [_flickrModel release];
+    [_recentsModel release];
     [_photoViewController release];
     [_placeId release];
     [_cellAssociations release];
@@ -149,7 +151,7 @@
     self.photoViewController.picticulars = pic;
 
     //  Tell the model that this pic was viewed so it can save it in recents.
-    [self.flickrModel didViewPicticulars:pic];
+    [self.recentsModel didViewPicticulars:pic];
     
     //  Put the title of the selected cell into the nav controller's
     //  navigation item (near the top of the screen).

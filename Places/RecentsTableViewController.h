@@ -7,12 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FlickrModel.h"
+#import "RecentsModel.h"
 #import "PhotoViewController.h"
 
 @interface RecentsTableViewController : UITableViewController {}
 
-@property (nonatomic,retain) IBOutlet FlickrModel*         flickrModel;
+@property (nonatomic,retain) IBOutlet RecentsModel*        recentsModel;
 @property (nonatomic,retain) IBOutlet PhotoViewController* photoViewController;
+
+- (IBAction) editButtonTouched:(id)sender;
 
 @end

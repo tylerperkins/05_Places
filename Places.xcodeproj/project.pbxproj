@@ -37,6 +37,8 @@
 		2F7AB70E13BBA0DE00C366DF /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F7AB70C13BBA0DE00C366DF /* PhotoViewController.m */; };
 		2F7AB70F13BBA0DE00C366DF /* PhotoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F7AB70D13BBA0DE00C366DF /* PhotoViewController.xib */; };
 		2FCB2D5813CBD9C800F9CDDF /* README.org in Resources */ = {isa = PBXBuildFile; fileRef = 2FCB2D5713CBD9C700F9CDDF /* README.org */; };
+		2FCD94FF13DB62B0004C1DAA /* RecentsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FCD94FE13DB62B0004C1DAA /* RecentsModel.m */; };
+		2FCD950013DB62B0004C1DAA /* RecentsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FCD94FE13DB62B0004C1DAA /* RecentsModel.m */; };
 		2FD3392613BA6AB100791661 /* NSString+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FD3392513BA6AB100791661 /* NSString+Utils.m */; };
 		2FD3392713BA6AB100791661 /* NSString+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FD3392513BA6AB100791661 /* NSString+Utils.m */; };
 		2FD3392B13BA6BC400791661 /* NSString_UtilsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FD3392913BA6BC400791661 /* NSString_UtilsTest.m */; };
@@ -104,6 +106,8 @@
 		2F7AB70C13BBA0DE00C366DF /* PhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoViewController.m; sourceTree = "<group>"; };
 		2F7AB70D13BBA0DE00C366DF /* PhotoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PhotoViewController.xib; sourceTree = "<group>"; };
 		2FCB2D5713CBD9C700F9CDDF /* README.org */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.org; sourceTree = "<group>"; };
+		2FCD94FD13DB62B0004C1DAA /* RecentsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentsModel.h; sourceTree = "<group>"; };
+		2FCD94FE13DB62B0004C1DAA /* RecentsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentsModel.m; sourceTree = "<group>"; };
 		2FD3392413BA6AB000791661 /* NSString+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Utils.h"; sourceTree = "<group>"; };
 		2FD3392513BA6AB100791661 /* NSString+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Utils.m"; sourceTree = "<group>"; };
 		2FD3392813BA6BC400791661 /* NSString_UtilsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSString_UtilsTest.h; sourceTree = "<group>"; };
@@ -188,6 +192,8 @@
 				2F39914913C5490B006DD885 /* Picticulars.m */,
 				2F730E8313B3A6C000AEDD7F /* FlickrModel.h */,
 				2F730E8413B3A6C000AEDD7F /* FlickrModel.m */,
+				2FCD94FD13DB62B0004C1DAA /* RecentsModel.h */,
+				2FCD94FE13DB62B0004C1DAA /* RecentsModel.m */,
 				2FD3392413BA6AB000791661 /* NSString+Utils.h */,
 				2FD3392513BA6AB100791661 /* NSString+Utils.m */,
 				2F730DFC13B2664600AEDD7F /* Supporting Files */,
@@ -383,6 +389,7 @@
 				2F39913613BEAA1B006DD885 /* TableViewCellAssociations.m in Sources */,
 				2F39914713C4B4C5006DD885 /* SavesAndRestoresDefaults.m in Sources */,
 				2F39914A13C5490C006DD885 /* Picticulars.m in Sources */,
+				2FCD94FF13DB62B0004C1DAA /* RecentsModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,6 +400,7 @@
 				2FD3392713BA6AB100791661 /* NSString+Utils.m in Sources */,
 				2FD3392B13BA6BC400791661 /* NSString_UtilsTest.m in Sources */,
 				2F730E2B13B2664700AEDD7F /* PlacesTests.m in Sources */,
+				2FCD950013DB62B0004C1DAA /* RecentsModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

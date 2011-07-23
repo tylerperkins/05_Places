@@ -12,10 +12,10 @@
 @implementation Picticulars
 
 
-@synthesize url=_url;
-@synthesize title=_title;
-@synthesize subtitle=_subtitle;
-@synthesize lastViewed=_lastViewed;
+@synthesize url = _url;
+@synthesize title = _title;
+@synthesize subtitle = _subtitle;
+@synthesize lastViewed = _lastViewed;
 
 
 /*  Initializes the receiver, assigning each key's value to the receiver's

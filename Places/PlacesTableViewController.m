@@ -21,9 +21,9 @@
 @implementation PlacesTableViewController
 
 
-@synthesize flickrModel=_flickrModel;
-@synthesize mostViewedTableViewController=_mostViewedTableViewController;
-@synthesize cellAssociations=_cellAssociations;
+@synthesize flickrModel = _flickrModel;
+@synthesize mostViewedTableViewController = _mostViewedTableViewController;
+@synthesize cellAssociations = _cellAssociations;
 
 
 - (void) awakeFromNib {

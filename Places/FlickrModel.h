@@ -8,9 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "Picticulars.h"
-#import "SavesAndRestoresDefaults.h"
 
-@interface FlickrModel : NSObject<SavesAndRestoresDefaults> {}
+@interface FlickrModel : NSObject {}
 
 - (void) refresh;
 - (NSUInteger) numberOfPlaces;
@@ -21,9 +20,6 @@
 - (NSUInteger) numberOfImagesForPlaceId:(NSString*)placeId;
 - (Picticulars*) newPicticularsForPlaceId:(NSString*)placeId
                               atIndexPath:(NSIndexPath*)indexPath;
-- (void) didViewPicticulars:(Picticulars*)pic;
-- (NSInteger) countOfRecents;
-- (Picticulars*) recentPicticularsAtIndexpath:(NSIndexPath*)indexPath;
 - (UIImage*) imageFromURL:(NSURL*)url;
 
 

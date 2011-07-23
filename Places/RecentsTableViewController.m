@@ -18,9 +18,9 @@
 @implementation RecentsTableViewController
 
 
-@synthesize flickrModel=_flickrModel;
-@synthesize photoViewController=_photoViewController;
-@synthesize cellAssociations=_cellAssociations;
+@synthesize recentsModel = _recentsModel;
+@synthesize photoViewController = _photoViewController;
+@synthesize cellAssociations = _cellAssociations;
 
 
 - (void) awakeFromNib {
@@ -32,7 +32,7 @@
 
 
 - (void) dealloc {
-    [_flickrModel release];
+    [_recentsModel release];
     [_photoViewController release];
     [_cellAssociations release];
     [super dealloc];
@@ -44,6 +44,20 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
+}
+
+
+/*  The Edit button toggles its title between "Edit" and "Done". When "Edit"
+    is touched, we go into edit mode. When "Done" is touched, we go back into
+    non-editing mode.
+*/
+- (IBAction) editButtonTouched:(UIBarButtonItem*)sender {
+    BOOL goIntoEditMode = [sender.title isEqual:@"Edit"];
+    [self.tableView setEditing:goIntoEditMode animated:YES];
+    sender.title = goIntoEditMode ? @"Done" : @"Edit";
+    sender.style = goIntoEditMode
+    ?   UIBarButtonItemStyleDone
+    :   UIBarButtonItemStylePlain;
 }
 
 
@@ -72,7 +86,7 @@
 - (NSInteger) tableView:(UITableView*)tableView
   numberOfRowsInSection:(NSInteger)section
 {
-    return  [self.flickrModel countOfRecents];
+    return  [self.recentsModel countOfRecents];
 }
 
 
@@ -81,7 +95,7 @@
 {
     //  Retrieve the data for the current place and specified index, wrapped
     //  in a Picticulars data object.
-    Picticulars* pic = [self.flickrModel
+    Picticulars* pic = [self.recentsModel
         recentPicticularsAtIndexpath:indexPath
     ];
     
@@ -96,6 +110,25 @@
     cell.detailTextLabel.text = pic.subtitle;
     
     return cell;
+}
+
+
+/*  Called when the user changes something in editing mode. Currently, the only
+    editing style presented is UITableViewCellEditingStyleDelete. Just delete
+    the associated Particulars object from the recentsModel and re-construct the
+    table.
+*/
+- (void)   tableView:(UITableView *)tableView
+  commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+   forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //  No need to check editingStyle, since all the user can do is delete.
+    [self.recentsModel
+        didDeletePicticulars:[self.cellAssociations
+            associateForIndexPath:indexPath
+        ]
+    ];
+    [tableView reloadData];
 }
 
 
