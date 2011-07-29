@@ -18,9 +18,10 @@
 @synthesize lastViewed = _lastViewed;
 
 
-/*  Initializes the receiver, assigning each key's value to the receiver's
-    property whose name matches the key. The value for key "urlString" is
-    translated into an NSURL object and assigned to property url.
+/*  Use setValuesForKeysWithDictionary: to assign each property from an
+    key-value pair in the given dictionary. This way, adding, removing, or
+    changing any property (except url/"urlString") requires no change to the
+    code below.    
 */
 - (id) initFromDictionary:(NSDictionary*)d {
     self = [super init];
@@ -51,13 +52,6 @@
 }
 
 
-/*  Returns a new dictionary representing the data in the receiver. Keys match
-    the receiver's property names and each key's value is the corresponding
-    property's value. The sole exception is property url, whose value is
-    represented as a string and is associated with key "urlString". There is
-    therefore no "url" key in the returned dictionary. Note that the returned
-    object has a retain count of 1, so should be released.
-*/
 - (NSDictionary*) newDictionary {
     NSMutableDictionary* dict = [[self
         dictionaryWithValuesForKeys:[NSArray
@@ -70,22 +64,17 @@
 }
 
 
-/*  A Picticular is "greater than" this one if and only if it was viewed
-    more recently.
-*/
 - (NSComparisonResult) compare:(Picticulars*)pic {
     return  [self.lastViewed compare:pic.lastViewed];
 }
 
 
-/*  We identify a Picticulars object strictly by its url property.
-*/
 - (BOOL) isEqual:(id)other {
     return
-        other == self  ||
-        (   other &&
-            [other isKindOfClass:[self class]] &&
-            [self.url isEqual:((Picticulars*)other).url]
+        other == self  ||                                // Same object, or ...
+        (   other &&                                     // Must not be nil.
+            [other isKindOfClass:[self class]] &&        // Must be same class.
+            [self.url isEqual:((Picticulars*)other).url] // Urls must be equal.
         );
 }
 

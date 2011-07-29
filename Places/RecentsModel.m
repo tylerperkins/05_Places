@@ -11,7 +11,7 @@
 static NSInteger const MaxRecents = 25;
 
 @interface RecentsModel ()
-@property (retain,nonatomic) NSMutableSet*   recents;
+@property (assign,nonatomic) NSMutableSet*   recents;
 @property (retain,nonatomic) NSMutableArray* recentsSorted;
 @end
 
@@ -28,7 +28,6 @@ static NSInteger const MaxRecents = 25;
     self = [super init];
     if (self) {
         self.recents = [[NSMutableSet alloc] initWithCapacity:MaxRecents];
-        [self.recents release];      // Because setRecents: does a retain.
         self.recentsSorted = nil;    // Lazily built in recentsSorted.
     }
     
@@ -103,9 +102,9 @@ static NSInteger const MaxRecents = 25;
         //  Create a new mutable array of Picticulars sorted by their
         //  dateLastViewed properties.
         self.recentsSorted = [[self.recents
-                               sortedArrayUsingDescriptors:byLastViewed
-                               ] mutableCopy];
-        [self.recentsSorted release];
+            sortedArrayUsingDescriptors:byLastViewed
+        ] mutableCopy];            // mutableCopy returns a retained object.
+        [_recentsSorted release];  // <-- Since setRecentsSorted: does retain.
         [byLastViewed release];
         
         //  If the new _recentsSorted has more than MaxRecents elements, then

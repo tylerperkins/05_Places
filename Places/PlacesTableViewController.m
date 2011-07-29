@@ -12,7 +12,7 @@
 
 
 @interface PlacesTableViewController ()
-@property (retain,nonatomic) TableViewCellAssociations* cellAssociations;
+@property (assign,nonatomic) TableViewCellAssociations* cellAssociations;
 - (void) populate;
 - (void) pushMostViewedTableViewController;
 @end
@@ -75,34 +75,55 @@
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView {
-    return 1;
+    return  [self.flickrModel.countriesSorted count];
+}
+
+
+/*  Provides the title for each section. If this method is not implemented,
+    no sections will appear.
+*/
+- (NSString*)   tableView:(UITableView *)tableView
+  titleForHeaderInSection:(NSInteger)sectionIndex
+{
+    return  [self.flickrModel.countriesSorted objectAtIndex:sectionIndex];
+}
+
+
+/*  Provides the list of titles to appear in the section index on the right
+    side of the screen. If this method is not implemented, no section index
+    will be shown.
+*/
+- (NSArray*) sectionIndexTitlesForTableView:(UITableView *)tableView {
+    return  self.flickrModel.countriesSorted;
 }
 
 
 - (NSInteger)tableView:(UITableView*)tableView
- numberOfRowsInSection:(NSInteger)section
+ numberOfRowsInSection:(NSInteger)sectionIndex
 {
     //  Return the number of rows in the section.
-    return [self.flickrModel numberOfPlaces];
+    return [self.flickrModel
+        numberOfPlacesForCountry:[self.flickrModel.countriesSorted
+            objectAtIndex:sectionIndex
+        ]
+    ];
 }
 
 
 - (UITableViewCell*)tableView:(UITableView*)tableView
         cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    //  Get a new or reused cell and associate it with the place_id for the
-    //  selected cell.
+    PlaceInfo* info = [self.flickrModel placeInfoAtIndexPath:indexPath];
+
+    //  Obtain a new or reused cell and associate it with the PlaceInfo at
+    //  indexPath.
     UITableViewCell* cell = [self.cellAssociations
-        cellToAssociateWithObject:[
-            self.flickrModel placeDataForKey:@"place_id"
-                                 atIndexPath:indexPath
-        ]
+        cellToAssociateWithObject:info
     ];
 
-    cell.textLabel.text = [self.flickrModel cityAtIndexPath:indexPath];
-    cell.detailTextLabel.text = [self.flickrModel
-        fullStateAtIndexPath:indexPath
-    ];
+    //  Decorate the cell.
+    cell.textLabel.text = info.city;
+    cell.detailTextLabel.text = info.fullState;
     
     return cell;
 }
@@ -114,9 +135,9 @@
 - (void)          tableView:(UITableView*)tableView
     didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    //  Since the user selected it, the cell is visible, and so has an
-    //  placeId value associated with the cell's tag.
-    self.mostViewedTableViewController.placeId = [self.cellAssociations
+    //  Since the user selected it, the cell is on screen, and so has an
+    //  PlaceInfo object associated with the cell's tag.
+    self.mostViewedTableViewController.placeInfo = [self.cellAssociations
         associateForSelectedCell
     ];
 
@@ -124,7 +145,7 @@
         cellForRowAtIndexPath:indexPath
     ].textLabel.text;
 
-    if ( self.mostViewedTableViewController.placeIdDidChange ) {
+    if ( self.mostViewedTableViewController.placeInfoDidChange ) {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     }
     [self performSelector:@selector(pushMostViewedTableViewController)

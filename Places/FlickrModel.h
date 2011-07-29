@@ -9,18 +9,21 @@
 #import <Foundation/Foundation.h>
 #import "Picticulars.h"
 
+@interface PlaceInfo : NSObject {}
+@property (retain,nonatomic) NSString *placeId, *country, *city, *fullState;
+@end
+
+
 @interface FlickrModel : NSObject {}
 
+@property (retain,nonatomic) NSArray* countriesSorted;
+
 - (void) refresh;
-- (NSUInteger) numberOfPlaces;
-- (NSString*) placeDataForKey:(NSString*)key
-                  atIndexPath:(NSIndexPath*)idxPath;
-- (NSString*) cityAtIndexPath:(NSIndexPath*)idxPath;
-- (NSString*) fullStateAtIndexPath:(NSIndexPath*)idxPath;
+- (NSUInteger) numberOfPlacesForCountry:(NSString*)cntry;
+- (PlaceInfo*) placeInfoAtIndexPath:(NSIndexPath*)indexPath;
 - (NSUInteger) numberOfImagesForPlaceId:(NSString*)placeId;
 - (Picticulars*) newPicticularsForPlaceId:(NSString*)placeId
                               atIndexPath:(NSIndexPath*)indexPath;
 - (UIImage*) imageFromURL:(NSURL*)url;
-
 
 @end

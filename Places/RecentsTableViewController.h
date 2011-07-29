@@ -10,6 +10,12 @@
 #import "RecentsModel.h"
 #import "PhotoViewController.h"
 
+/*  This class manages the pictures recently viewed by the user. It presents
+    them in a UITableView, listed with the most recent at the top. Tapping
+    the Edit button taking the cells into edit mode, allowing the user to
+    delete any cell. The user can also swipe a cell to the left to put it into
+    edit mode.
+*/
 @interface RecentsTableViewController : UITableViewController {}
 
 @property (nonatomic,retain) IBOutlet RecentsModel*        recentsModel;

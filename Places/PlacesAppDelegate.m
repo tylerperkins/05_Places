@@ -19,9 +19,11 @@
 - (BOOL)            application:(UIApplication*)application
   didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
+    //  Restore the list of recently viewed pictures created in last session.
     [self.recentsModel
         restoreFromUserDefaults:[NSUserDefaults standardUserDefaults]
     ];
+
     self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
     return YES;

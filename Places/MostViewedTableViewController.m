@@ -11,7 +11,7 @@
 
 
 @interface MostViewedTableViewController ()
-@property (retain,nonatomic) TableViewCellAssociations* cellAssociations;
+@property (assign,nonatomic) TableViewCellAssociations* cellAssociations;
 - (void) pushPhotoViewController;
 @end
 
@@ -22,8 +22,8 @@
 @synthesize flickrModel = _flickrModel;
 @synthesize recentsModel = _recentsModel;
 @synthesize photoViewController = _photoViewController;
-@synthesize placeId = _placeId;
-@synthesize placeIdDidChange = _placeIdDidChange;
+@synthesize placeInfo = _placeInfo;
+@synthesize placeInfoDidChange = _placeInfoDidChange;
 @synthesize cellAssociations = _cellAssociations;
 
 
@@ -39,7 +39,7 @@
     [_flickrModel release];
     [_recentsModel release];
     [_photoViewController release];
-    [_placeId release];
+    [_placeInfo release];
     [_cellAssociations release];
     [super dealloc];
 }
@@ -59,7 +59,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    if ( self.placeIdDidChange ) {
+    if ( self.placeInfoDidChange ) {
         //  We're not just going back to the same list, so get new photo data.
         [self.tableView reloadData];
 
@@ -75,7 +75,7 @@
         ];
 
         //  Next time, don't reloadData, etc.
-        self.placeIdDidChange = NO;
+        self.placeInfoDidChange = NO;
     }
 }
 
@@ -90,11 +90,11 @@
 #pragma mark - Explicit accessors
 
 
-- (void) setPlaceId:(NSString*)placeId {
-    self.placeIdDidChange =  placeId != _placeId;
-    if ( self.placeIdDidChange ) {
-        [_placeId release];
-        _placeId = [placeId retain];
+- (void) setPlaceInfo:(PlaceInfo*)placeInfo {
+    self.placeInfoDidChange = placeInfo.placeId != _placeInfo.placeId;
+    if ( self.placeInfoDidChange ) {
+        [_placeInfo release];
+        _placeInfo = [placeInfo retain];
     }
 }
 
@@ -110,21 +110,22 @@
 - (NSInteger) tableView:(UITableView*)tableView
   numberOfRowsInSection:(NSInteger)section
 {
-    return [self.flickrModel numberOfImagesForPlaceId:self.placeId];
+    return [self.flickrModel numberOfImagesForPlaceId:self.placeInfo.placeId];
 }
 
 
 - (UITableViewCell *) tableView:(UITableView*)tableView
           cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    //  Retrieve the data for the current place and specified index, wrapped
-    //  in a Picticulars data object.
+    //  Retrieve the data for the current place and given indexPath,
+    //  wrapped in a Picticulars data object.
     Picticulars* pic = [self.flickrModel
-        newPicticularsForPlaceId:self.placeId
+        newPicticularsForPlaceId:self.placeInfo.placeId
                      atIndexPath:indexPath
     ];
 
-    //  Get a new or reused cell and associate it with the Picticulars.
+    //  Obtain a new or reused cell and associate it with the Picticulars at
+    //  indexPath.
     UITableViewCell* cell = [self.cellAssociations
         cellToAssociateWithObject:pic
     ];
@@ -145,7 +146,7 @@
 - (void)        tableView:(UITableView*)tableView
   didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    //  Since the user selected it, the cell is visible, and so has a
+    //  Since the user selected it, the cell is on screen, and so has a
     //  Picticulars instance associated with the cell's tag.
     Picticulars* pic = [self.cellAssociations associateForSelectedCell];
     self.photoViewController.picticulars = pic;
@@ -159,8 +160,8 @@
         cellForRowAtIndexPath:indexPath
     ].textLabel.text;
 
-    //  Navigate to the PhotoViewController and view the image, but only after
-    //  we allow time for the network activity indicator to show.
+    //  Navigate to the PhotoViewController and show the image, but only after
+    //  we allow time to turn on the network activity indicator.
     if ( self.photoViewController.picticularsDidChange ) {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     }

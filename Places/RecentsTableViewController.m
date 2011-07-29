@@ -10,7 +10,7 @@
 #import "TableViewCellAssociations.h"
 
 @interface RecentsTableViewController ()
-@property (retain,nonatomic) TableViewCellAssociations* cellAssociations;
+@property (assign,nonatomic) TableViewCellAssociations* cellAssociations;
 - (void) pushPhotoViewController;
 @end
 

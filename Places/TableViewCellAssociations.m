@@ -11,7 +11,7 @@
 
 @interface TableViewCellAssociations ()
 @property (retain,nonatomic) UITableView*    tableView;
-@property (retain,nonatomic) NSMutableArray* associates;
+@property (assign,nonatomic) NSMutableArray* associates;
 @property (assign,nonatomic) NSInteger       cellTagCount;
 @property (retain,nonatomic) NSString*       reuseIdentifier;
 @end
