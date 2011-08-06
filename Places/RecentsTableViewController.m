@@ -10,8 +10,7 @@
 #import "TableViewCellAssociations.h"
 
 @interface RecentsTableViewController ()
-@property (assign,nonatomic) TableViewCellAssociations* cellAssociations;
-- (void) pushPhotoViewController;
+@property (readonly) TableViewCellAssociations* cellAssociations;
 @end
 
 
@@ -25,7 +24,7 @@
 
 - (void) awakeFromNib {
     [super awakeFromNib];
-    self.cellAssociations = [[TableViewCellAssociations alloc]
+    _cellAssociations = [[TableViewCellAssociations alloc]
         initWithTableView:self.tableView
     ];
 }
@@ -47,10 +46,6 @@
 }
 
 
-/*  The Edit button toggles its title between "Edit" and "Done". When "Edit"
-    is touched, we go into edit mode. When "Done" is touched, we go back into
-    non-editing mode.
-*/
 - (IBAction) editButtonTouched:(UIBarButtonItem*)sender {
     BOOL goIntoEditMode = [sender.title isEqual:@"Edit"];
     [self.tableView setEditing:goIntoEditMode animated:YES];
@@ -86,7 +81,7 @@
 - (NSInteger) tableView:(UITableView*)tableView
   numberOfRowsInSection:(NSInteger)section
 {
-    return  [self.recentsModel countOfRecents];
+    return  [self.recentsModel count];
 }
 
 
@@ -95,9 +90,7 @@
 {
     //  Retrieve the data for the current place and specified index, wrapped
     //  in a Picticulars data object.
-    Picticulars* pic = [self.recentsModel
-        recentPicticularsAtIndexpath:indexPath
-    ];
+    Picticulars* pic = [self.recentsModel picticularsAtIndexpath:indexPath];
     
     //  Get a new or reused cell and associate it with the Picticulars.
     UITableViewCell* cell = [self.cellAssociations
@@ -114,9 +107,9 @@
 
 
 /*  Called when the user changes something in editing mode. Currently, the only
-    editing style presented is UITableViewCellEditingStyleDelete. Just delete
-    the associated Particulars object from the recentsModel and re-construct the
-    table.
+    editing style presented is UITableViewCellEditingStyleDelete. Just tell the
+    recentsModel to delete the associated Particulars object and re-construct
+    the table.
 */
 - (void)   tableView:(UITableView *)tableView
   commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
@@ -148,33 +141,12 @@
     self.photoViewController.navigationItem.title = [tableView
         cellForRowAtIndexPath:indexPath
     ].textLabel.text;
-    
-    //  Navigate to the PhotoViewController and view the image, but only after
-    //  we allow time for the network activity indicator to show.
-    if ( self.photoViewController.picticularsDidChange ) {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    }
-    [self performSelector:@selector(pushPhotoViewController)
-               withObject:nil
-               afterDelay:0.05
-    ];
-}
 
-
-#pragma mark - Private methods and functions
-
-
-/*  Method used to postpone pushing the PhotoViewController until after the
- network activity indicator has a chance to display.
- */
-- (void) pushPhotoViewController {
+    //  Navigate to the PhotoViewController and view the image.
     [self.navigationController
         pushViewController:self.photoViewController
                   animated:YES
     ];
-    
-    //  All done. Turn off the indicator.
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
 

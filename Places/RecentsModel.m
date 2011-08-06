@@ -11,8 +11,9 @@
 static NSInteger const MaxRecents = 25;
 
 @interface RecentsModel ()
-@property (assign,nonatomic) NSMutableSet*   recents;
-@property (retain,nonatomic) NSMutableArray* recentsSorted;
+@property (readonly)         NSMutableSet*     recents;
+@property (retain,nonatomic) NSMutableArray*   recentsSorted;
+@property (readonly)         NSArray*          byLastViewed;
 @end
 
 
@@ -21,16 +22,24 @@ static NSInteger const MaxRecents = 25;
 
 @synthesize recents = _recents;
 @synthesize recentsSorted = _recentsSorted;
+@synthesize byLastViewed = _byLastViewed;
 
 
-- (id)init
-{
+- (id)init {
     self = [super init];
     if (self) {
-        self.recents = [[NSMutableSet alloc] initWithCapacity:MaxRecents];
+        _recents = [[NSMutableSet alloc] initWithCapacity:MaxRecents];
         self.recentsSorted = nil;    // Lazily built in recentsSorted.
+
+        //  Make a singleton array wrapping an NSSortDescriptor for the
+        //  sortedArrayUsingDescriptors: call below.
+        NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc]
+            initWithKey:@"lastViewed"
+              ascending:NO
+        ];
+        _byLastViewed = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+        [sortDescriptor release];
     }
-    
     return self;
 }
 
@@ -38,6 +47,7 @@ static NSInteger const MaxRecents = 25;
 - (void) dealloc {
     [_recents release];
     [_recentsSorted release];
+    [_byLastViewed release];
     [super dealloc];
 }
 
@@ -67,12 +77,15 @@ static NSInteger const MaxRecents = 25;
 }
 
 
-- (NSInteger) countOfRecents {
+- (NSInteger) count {
+    //  We need to count the elements in self.recentsSorted, not self.recents
+    //  because the latter may have elements that will be trimmed off when the
+    //  recentsSorted getter is called.
     return  [self.recentsSorted count];
 }
 
 
-- (Picticulars*) recentPicticularsAtIndexpath:(NSIndexPath*)indexPath {
+- (Picticulars*) picticularsAtIndexpath:(NSIndexPath*)indexPath {
     return  [self.recentsSorted objectAtIndex:indexPath.row];
 }
 
@@ -89,26 +102,17 @@ static NSInteger const MaxRecents = 25;
  */
 - (NSArray*) recentsSorted {
     if ( ! _recentsSorted ) {
-        //  Make a singleton array wrapping an NSSortDescriptor for the
-        //  sortedArrayUsingDescriptors: call below.
-        NSSortDescriptor* sortDescriptor = [[NSSortDescriptor alloc]
-                                            initWithKey:@"lastViewed" ascending:NO
-                                            ];
-        NSArray* byLastViewed = [[NSArray alloc]
-                                 initWithObjects:sortDescriptor, nil
-                                 ];
-        [sortDescriptor release];
-        
+
         //  Create a new mutable array of Picticulars sorted by their
         //  dateLastViewed properties.
         self.recentsSorted = [[self.recents
-            sortedArrayUsingDescriptors:byLastViewed
+            sortedArrayUsingDescriptors:self.byLastViewed
         ] mutableCopy];            // mutableCopy returns a retained object.
         [_recentsSorted release];  // <-- Since setRecentsSorted: does retain.
-        [byLastViewed release];
         
         //  If the new _recentsSorted has more than MaxRecents elements, then
-        //  remove the extras.
+        //  remove the extras. This is the only reason _recentsSorted must be
+        //  mutable.
         while ( [_recentsSorted count] > MaxRecents ) {
             [self.recents removeObject:[_recentsSorted lastObject]];
             [_recentsSorted removeLastObject];

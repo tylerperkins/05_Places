@@ -11,17 +11,17 @@
 
 @interface TableViewCellAssociations ()
 @property (retain,nonatomic) UITableView*    tableView;
-@property (assign,nonatomic) NSMutableArray* associates;
 @property (assign,nonatomic) NSInteger       cellTagCount;
-@property (retain,nonatomic) NSString*       reuseIdentifier;
+@property (readonly)         NSMutableArray* associates;
+@property (readonly)         NSString*       reuseIdentifier;
 @end
 
 @implementation TableViewCellAssociations
 
 
 @synthesize tableView = _tableView;
-@synthesize associates = _associates;
 @synthesize cellTagCount = _cellTagCount;
+@synthesize associates = _associates;
 @synthesize reuseIdentifier = _reuseIdentifier;
 
 
@@ -29,13 +29,13 @@
     self = [super init];
     if ( self ) {
         self.tableView = tableView;
-        self.associates = [NSMutableArray new];
+        _associates = [NSMutableArray new];
         self.cellTagCount = 0;
 
-        //  Object's description method, which we inherit, is unique for each
+        //  NSObject's description method, which we inherit, is unique for each
         //  instance, e.g. "<TableViewCellAssociations: 0x4e62f80>". We use it
-        //  to help the table view manage its cells.
-        self.reuseIdentifier = [self description];
+        //  to reuse the cells.
+        _reuseIdentifier = [[self description] retain];
     }
     return self;
 }
@@ -76,10 +76,10 @@
 }
 
 
+
 - (id) associateForIndexPath:(NSIndexPath*)indexPath {
-    return  [self.associates
-        objectAtIndex:[self.tableView cellForRowAtIndexPath:indexPath].tag
-    ];
+    UITableViewCell* cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    return  cell  ?  [self.associates objectAtIndex:cell.tag]  :  nil;
 }
 
 

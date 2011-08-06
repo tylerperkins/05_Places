@@ -1,10 +1,77 @@
 ** Fall 2010 Stanford course, /Developing Apps for iOS/.
 
 **** This excellent series of online lectures is available through [[http://itunes.apple.com/us/itunes-u/developing-apps-for-ios-hd/id395605774][iTunes U]].
+
 **** You can download slides from the lectures and associated [[http://www.stanford.edu/class/cs193p/cgi-bin/drupal/downloads-2010-fall][assignments]].
 
 ** This repository contains my solution to [[http://www.stanford.edu/class/cs193p/cgi-bin/drupal/system/files/assignments/Assignment%205_0.pdf][Assignment V]].
 
-*** Differences my from the assignment requirements.
+*** Differences from the assignment requirements
 
-As far as I know, I've implemented the requirements completely. I also implemented the second Extra Credit item, allowing the user to delete rows from the Recents list.
+As far as I know, I've implemented the requirements completely. I also implemented two Extra Credit items:
+
+*The user can delete rows from the Recents list*, either by tapping an Edit button and selecting a cell to be deleted, or by swiping left or right over the cell to be deleted.
+
+*The Places screen is now organized into sections*, each one the name of a country. Sections are listed alphabetically, as are cities within each section. A section index is also provided on the right side of the screen.
+
+I implemented the "recents" requirement using a set plus an array of =Picticulars= objects sorted by their =lastViewed= property. I later saw that this is indeed how the Assignment expects it to be done. Yea! But then I realized it would have been simpler to use no set at all, just an array that accumulates =Picticulars= as they are viewed. You'd need to delete the duplicate, if present, but overall, I think this would be much less complex. My data object class =Picticulars= would need no =lastViewed= property, nor the =hash= and =equalTo= methods required of set members. Plus, there's one big advantage: If you ever wanted to implement /changing the position/ of an item in the Recents table, it would be easy. Oh, well. Implementing it as I did with a =NSMutableSet= and a sorted =NSMutableArray= generated from it provided good experience with these very important classes.
+
+*** Challenges Realized
+
+*Abstracting-out the association of an object with a UITableViewCell*
+
+I'm particularly pleased with my helper class TableViewCellAssociations. Its role is to help you program your table views in [[http://www.artima.com/intv/dryP.html][DRY (Don't Repeat Yourself)]] style. When a =UITableView= must display a cell, it asks your =UITableViewDataSource= implementation for a =UITableViewCell=, given its =NSIndexPath= in the table's section-row hierarchy. It may require a bit of lookup or calculation to find the data needed to populate the cell with labels, images, accessory type, etc. You might even create and ship around a new data wrapper object for the cell.
+
+Now that the cell is on screen, suppose the user selects it. =UITableView= asks your =UITableViewDelegate= implementation to handle this, providing, once again, the =NSIndexPath= of the selected cell. You now have to come up with data /parallel/ with what we needed to populate the cell. We don't need to populate labels, but we need to come up with, say, the associated ID of an image to display. Then we can hand the ID to another =UIViewController= to push onto the navigation controller, for example.
+
+This seemed clumsy to me. There are many moving parts that need to be kept in sync. Why not just save the all the data we generate in the =UITableViewDataSource= step as an object associated with the cell? After all, when a cell is selected, it must be on screen, so the data we'll need then will be there, associated with the cell.
+
+Unfortunately, Cocoa Touch helps only a little. The only thing you can attach directly to a =UITableViewCell= is an =NSInteger= in its =tag= property. So what =TableViewCellAssociations= does is store an array of objects that you associate with cells. It maintains each association by assigning an array index into the cell's =tag= property. When a cell is needed by your =UITableViewDataSource=, you call =TableViewCellAssociations=' =cellToAssociateWithObject:= method to get or make a =UITableViewCell=. It stores your object in the array, copies its index into the =tag= property and returns the cell. The returned cell may be new or recycled, since =UITableView='s =dequeueReusableCellWithIdentifier:= method has been employed for you. Either way, your object is now associated with the cell you got back, which you then populate as usual.
+
+Now when the user selects a cell, all you do is call =TableViewCellAssociations=' =associateForSelectedCell= method to get the associated object. That's it! The nice thing is that this class is completely generic and does not depend on the kind of associated data, so it can be used in any app that makes use of =UITableView= and its delegates.
+
+*Managing zoom and scale of a UIScrollView containing a UIImageView*
+
+I confused myself for quite a while about the best way to use =UIScrollView=. On my first try, I used a technique I came up with in a project I worked on a few months back. I populated my controller's view in Interface Builder by placing a =UIScrollView= in it, then placing a =UIImageView= inside that. The idea was that all these single-instance objects would then be assigned at app load time from the XIB. Then as the app downloads new images, it would swap them into that =UIImageView= instance for display. This actually worked OK -- sort of! But the requirements specify that with any new image, we should center and zoom in just enough to fill the view. Things got very confusing when the bounds of the =UIImageView= changed to accomodate a new image, and the frame of the =UIImageView= inside the =UIScrollView= had to be adjusted.
+
+Fixing that was leading to more and more complexity. At some point you just have to take a step back and realize it's just not /supposed/ to be so hard! So I backed off on my IB-assigned, single-instance =UIImageView=. Instead, I programatically assigned a new =UIImageView= to the =UIScrollView= for each newly downloaded image. This seems to be the way the framework was designed, because it worked beautifully. See method setScrollViewZoom in class =PhotoViewController= for how straightforwardly =scrollView='s =zoomScale=, =contentOffset=, and =minimumZoomScale= are assigned.
+
+*Showing the Network Activity Indicator*
+
+Another big head-scratcher was the problem of properly operating the Network Activity Indicator. You can turn it on and off easily using =UIApplication='s =networkActivityIndicatorVisible= property. So let's say that in your view controller's =viewWillAppear:= method you do the following: You set the =networkActivityIndicatorVisible= property to =YES=, then you perform a time-consuming download, then you set the property to =NO=, then you finally build the view using the downloaded data. Should work, right?
+
+Nope. An issue arises because the runtime doesn't get around to actually showing the indicator until after your UI call stack has unwound. This makes sense, since the indicator is in just another view to be drawn, after all. So what you'd see is the following: Your blank view appears, then you wait for the download, then you see the correct contents drawn in the view, then you see the network activity indicator appear for a split second, then disappear!
+
+After googling around, I found the above explanation and a couple solutions. One involved showing the indicator in one thread and constructing my view in another. I spent a lot of time learning about threading in Objective-C, but I never could get it to work. Anyway, it seems dangerous to be messing with threads within a single-threaded UI runtime.
+
+The other solution involved employing =NSObject='s =performSelector:withObject:afterDelay:= method. This will call a method of your choosing in the /current/ thread at a later time in the run loop. What you do is set the =networkActivityIndicatorVisible= property to =YES=, then call the =performSelector:withObject:afterDelay:= method with a delay of, say, 50 msec and with the selector of a method you've written to do the rest of your UI construction. That's it -- reminiscent of continuation-passing style in functional programming. Your call stack unwinds, the indicator is shown, then the runtime calls your method to draw your view. At some point in your method, you also set =networkActivityIndicatorVisible= property to =NO=. Again, the call stack unwinds and the runtime hides the indicator.
+
+I used this technique in classes =PlacesTableViewController= and =PhotoViewController= to construct their respective views in their =viewWillAppear:= methods. But to operate the indicator for downloading the list of picture titles when the user selects a place, I instead had the =PlacesTableViewController= do it in =tableView:didSelectRowAtIndexPath:=. It's done at the point where it pushes the =MostViewedTableViewController= onto the navigation view controller stack. This proved simpler because it was not necessary to construct a custom method to do the delayed "continuation".
+
+*** To Do
+
+The app really should have a lot more unit tests. Unfortunately, I didn't follow TDD protocol this time. In my defense, this assignment was really all about user interface, mostly exploring the Cocoa Touch API. Since there was not much code that did not tie in directly with UI elements, there wasn't much to test.
+
+By the way, I've been meaning to try out [[http://www.gorillalogic.com/fonemonkey][FoneMonkey]]. That would really avail the UI to automated testing. Since you have to have a UI to test, it does not really allow for Test First style. But your UI tests are automated, so it still promotes safe refactoring and incremental development. It blurs the distinction between unit testing and functional/acceptance testing.
+
+*** License (MIT)
+
+*Copyright (C) 2011 by Tyler Perkins*
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.

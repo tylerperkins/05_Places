@@ -12,7 +12,7 @@
 
 
 @interface PlacesTableViewController ()
-@property (assign,nonatomic) TableViewCellAssociations* cellAssociations;
+@property (readonly) TableViewCellAssociations* cellAssociations;
 - (void) populate;
 - (void) pushMostViewedTableViewController;
 @end
@@ -28,7 +28,7 @@
 
 - (void) awakeFromNib {
     [super awakeFromNib];
-    self.cellAssociations = [[TableViewCellAssociations alloc]
+    _cellAssociations = [[TableViewCellAssociations alloc]
         initWithTableView:self.tableView
     ];
 }
@@ -135,7 +135,7 @@
 - (void)          tableView:(UITableView*)tableView
     didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    //  Since the user selected it, the cell is on screen, and so has an
+    //  Since the user selected it, the cell is on screen, and so has a
     //  PlaceInfo object associated with the cell's tag.
     self.mostViewedTableViewController.placeInfo = [self.cellAssociations
         associateForSelectedCell

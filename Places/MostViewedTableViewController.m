@@ -11,8 +11,7 @@
 
 
 @interface MostViewedTableViewController ()
-@property (assign,nonatomic) TableViewCellAssociations* cellAssociations;
-- (void) pushPhotoViewController;
+@property (readonly) TableViewCellAssociations* cellAssociations;
 @end
 
 
@@ -29,7 +28,7 @@
 
 - (void) awakeFromNib {
     [super awakeFromNib];
-    self.cellAssociations = [[TableViewCellAssociations alloc]
+    _cellAssociations = [[TableViewCellAssociations alloc]
         initWithTableView:self.tableView
     ];
 }
@@ -160,32 +159,11 @@
         cellForRowAtIndexPath:indexPath
     ].textLabel.text;
 
-    //  Navigate to the PhotoViewController and show the image, but only after
-    //  we allow time to turn on the network activity indicator.
-    if ( self.photoViewController.picticularsDidChange ) {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    }
-    [self performSelector:@selector(pushPhotoViewController)
-               withObject:nil
-               afterDelay:0.05
-     ];
-}
-
-
-#pragma mark - Private methods and functions
-
-
-/*  Method used to postpone pushing the PhotoViewController until after the
-    network activity indicator has a chance to display.
-*/
-- (void) pushPhotoViewController {
+    //  Navigate to the PhotoViewController and show the image.
     [self.navigationController
         pushViewController:self.photoViewController
                   animated:YES
     ];
-
-    //  All done. Turn off the indicator.
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
 

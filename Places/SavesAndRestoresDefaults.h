@@ -33,6 +33,15 @@ enum DefaultId {
     Recents
 };
 
+/*  Generates the string key corresponding to the given enum value.
+*/
 NSString* defaultKey( enum DefaultId n );
+
+/*  Looks up the "bundle identifier" for this app.
+*/
 NSString* appBundleIdentifier();
+
+/*  Removes all the persisted keys and values in the application domain of
+    the given user defaults object.
+*/
 void clearAppDefaults( NSUserDefaults* defaults );

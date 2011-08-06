@@ -12,10 +12,10 @@
 */
 @interface Picticulars : NSObject {}
 
-@property (retain,nonatomic) NSURL*    url;
-@property (retain,nonatomic) NSString* title;
-@property (retain,nonatomic) NSString* subtitle;
-@property (retain,nonatomic) NSDate*   lastViewed;
+@property (copy,nonatomic) NSURL*    url;
+@property (copy,nonatomic) NSString* title;
+@property (copy,nonatomic) NSString* subtitle;
+@property (copy,nonatomic) NSDate*   lastViewed;
 
 /*  Initializes the receiver, assigning each key's value to the receiver's
     property whose name matches the key. The value for key "urlString" is

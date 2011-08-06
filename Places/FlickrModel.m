@@ -11,16 +11,20 @@
 #import "NSString+Utils.h"
 
 @interface FlickrModel ()
-@property (retain,nonatomic) NSArray*       imageInfos;
-@property (retain,nonatomic) NSString*      latestPlaceId;
+@property (copy,  nonatomic) NSArray*       imageInfos;
+@property (copy,  nonatomic) NSString*      latestPlaceId;
 @property (retain,nonatomic) NSDictionary*  placeInfosForCountries;
 - (NSArray*) imageInfosForplaceId:(NSString*)placeId;
 @end
 
+/*  Private methods for PlaceInfo.
+*/
 @interface PlaceInfo ()            // (Implementation is at end of this file.)
 - (id) initWithPlaceDictionary:(NSDictionary*)dict;
 @end
 
+/*  Private functions used by PlaceInfo.
+*/
 NSArray* placeNamesInDict( NSDictionary* dict );
 NSString* fullStateDesignationFromNames( NSArray* names );
 
@@ -43,9 +47,6 @@ NSString* fullStateDesignationFromNames( NSArray* names );
 }
 
 
-/*  Downloads new data from Flickr to populate self.countriesSorted and
-    self.placeInfosForCountries.
-*/
 - (void) refresh {
     self.placeInfosForCountries = [[NSMutableDictionary alloc]
         initWithCapacity:50
@@ -94,8 +95,8 @@ NSString* fullStateDesignationFromNames( NSArray* names );
         [place release];
     }
 
-    //  Save the sorted list of countries. These will be shown as sections in
-    //  the table view.
+    //  Save the sorted list of countries. These will be shown as sections
+    //  in the table view.
     self.countriesSorted = [[self.placeInfosForCountries allKeys]
         sortedArrayUsingSelector:@selector(localizedCompare:)
     ];
@@ -147,8 +148,8 @@ NSString* fullStateDesignationFromNames( NSArray* names );
 }
 
 
-- (UIImage*) imageFromURL:(NSURL*)url {
-    return  [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
+- (UIImage*) imageFromPicticulars:(Picticulars*)pic {
+    return  [UIImage imageWithData:[NSData dataWithContentsOfURL:pic.url]];
 }
 
 
@@ -209,11 +210,11 @@ NSString* fullStateDesignationFromNames( NSArray* names ) {
 - (id) initWithPlaceDictionary:(NSDictionary*)dict {
     self = [super init];
     if ( self ) {
-        self.placeId = [dict objectForKey:@"place_id"];
+        _placeId = [[dict objectForKey:@"place_id"] retain];
         NSArray* placeNames = placeNamesInDict(dict);
-        self.country = [placeNames lastObject];
-        self.city = [placeNames objectAtIndex:0];
-        self.fullState = fullStateDesignationFromNames(placeNames);
+        _country = [[placeNames lastObject] retain];
+        _city = [[placeNames objectAtIndex:0] retain];
+        _fullState = [fullStateDesignationFromNames(placeNames) retain];
     }
     return  self;
 }

@@ -11,8 +11,9 @@
 
 
 @interface PhotoViewController ()
-@property (nonatomic,retain) UIImageView* imageView;
-- (void) setImageViewByDownloadingURL:(NSURL*)url;
+@property (retain,nonatomic) UIImageView* imageView;
+@property (assign,nonatomic) BOOL         picticularsDidChange;
+- (void) downloadAndDisplayPic:(Picticulars*)pic;
 - (void) setScrollViewZoom;
 @end
 
@@ -51,6 +52,7 @@ CGFloat scaleToFillOrFit( BOOL shouldFill, CGSize boundsSz, CGSize imageSz );
 
 - (void) viewDidUnload {
     self.imageView = nil;
+    self.picticularsDidChange = YES;  // Forces download. (We lost imageView.)
     self.scrollView = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
@@ -66,14 +68,17 @@ CGFloat scaleToFillOrFit( BOOL shouldFill, CGSize boundsSz, CGSize imageSz );
         //  from Flickr. Essentially, the image is cached in the imageView
         //  property itself.
 
-        //  Replace the UIImageView with one containing a newly downloaded
-        //  image.
+        //  Remove previous image. Shows only grey screen until new image is
+        //  finished downloading.
         [self.imageView removeFromSuperview];
-        [self setImageViewByDownloadingURL:self.picticulars.url];
-        [self.scrollView addSubview:self.imageView];
-
-        //  Adjust how we look at the image view.
-        [self setScrollViewZoom];
+        
+        //  Turn on the network activity indicator and wait 50 msec before
+        //  starting the download to allow for the indicator to appear.
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        [self performSelector:@selector(downloadAndDisplayPic:)
+                   withObject:self.picticulars
+                   afterDelay:0.05
+        ];
 
         //  Next time, don't reload the image unless we're given a new URL.
         self.picticularsDidChange = NO;
@@ -123,15 +128,23 @@ CGFloat scaleToFillOrFit( BOOL shouldFill, CGSize boundsSz, CGSize imageSz );
 #pragma mark - Private functions and methods
 
 
-/*  Downloads the image data specified by the given NSURL, and store it in the
-    new NSImage of a new UIImageView. The UIImageView is saved in property
-    imageView.
+/*  Downloads the image data specified by the given Picticulars, and store it
+    in the new NSImage of a new UIImageView. The UIImageView is saved in
+    property imageView, and replaces the existing view in scrollView.
 */
-- (void) setImageViewByDownloadingURL:(NSURL*)url {
+- (void) downloadAndDisplayPic:(Picticulars*)pic {
     self.imageView = [[UIImageView alloc]
-        initWithImage:[self.flickrModel imageFromURL:url]
+        initWithImage:[self.flickrModel imageFromPicticulars:pic]
     ];
     [self.imageView release];   // Because retained by setImageView:.
+    
+    //  Done downloading. Turn off the indicator.
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
+    [self.scrollView addSubview:self.imageView];
+    
+    //  Adjust how we look at the image view.
+    [self setScrollViewZoom];
 }
 
 
@@ -173,8 +186,8 @@ CGFloat scaleToFillOrFit( BOOL shouldFill, CGSize boundsSz, CGSize imageSz );
     corresponding dimensions of the bounds. If shouldFill is NO, the reverse
     is true -- the resulting size IS JUST CONTAINED BY the bounds' size.
  
-    If shouldFill  ==>  Bounds are just-filled by the image.
-    Otherwise      ==>  The image just-fits in the bounds.
+    If shouldFill  ==>  Bounds are just filled by the image.
+    Otherwise      ==>  The image just fits in the bounds.
 */
 CGFloat scaleToFillOrFit( BOOL shouldFill, CGSize boundsSz, CGSize imageSz ) {
     CGFloat widthScale  = boundsSz.width  / imageSz.width;
